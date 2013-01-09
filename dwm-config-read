@@ -1,0 +1,94 @@
+#!/bin/sh
+###############################################################################
+# dwm-config-read
+#
+# read dwm-scripts desktop configuration file.
+#
+# -----------------------------------------------------------------------------
+# DWM Scripts - wrapper for dwm/dmenu/slock
+#   (C) 2007-2013 Gerardo García Peña
+#   Programmed by Gerardo García Peña
+#
+#   This program is free software; you can redistribute it and/or modify it
+#   under the terms of the GNU General Public License as published by the Free
+#   Software Foundation; either version 2 of the License, or (at your option)
+#   any later version.
+#
+#   This program is distributed in the hope that it will be useful, but WITHOUT
+#   ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+#   FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+#   more details.
+#
+#   You should have received a copy of the GNU General Public License along
+#   with this program; if not, write to the Free Software Foundation, Inc., 51
+#   Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+#
+###############################################################################
+
+if [ "$DSW_CONFIG_READ" ]; then
+  exit 0
+fi
+DSW_CONFIG_READ="1"
+
+search_config_file()
+{
+  F="$1"
+
+  if [ -z "$F" ]; then
+    F="dwm-config"
+  fi
+  for i in "$HOME/.$F"                \
+           "$HOME/etc/dwm-scripts/$F" \
+           "/etc/dwm-scripts/$F"      \
+           "/opt/etc/dwm-scripts/$F"  ; do
+    if [ -e "$i" ]; then
+      echo "$i"
+      return 0
+    fi
+  done
+
+  return 1
+}
+
+log()
+{
+  echo "$DSW_PROGNAME: $@" 1>&2
+  echo "`date "+%d/%m/%Y %H:%M:%s"` $DSW_PROGNAME: $@" >> "$DSW_LOG"
+}
+
+error()
+{
+  log "error: $@"
+}
+
+msg()
+{
+  xsetroot -name "$@"
+}
+
+# log file
+DSW_LOG="$HOME/.dwm.log"
+
+# dmenu: DMN_HOME_BIN defined will add your ~/bin binaries to dmenu list
+DMN_HOME_BIN=1
+
+# set DWM temp dir
+DSW_TMP="/tmp/dwm-$USER"
+
+# set default parameters
+DSW_PROGNAME=`basename "$0"`
+DSW_CONFIG_FILE=`search_config_file`
+DSW_BAR_UPDATE=10
+DSW_SCREEN_OFF=120
+DSW_SCREEN_LOCK=200
+
+# process config file
+if [ "$DSW_CONFIG_FILE" ]; then
+  . "$DSW_CONFIG_FILE"
+fi
+
+# prepare ALSA commands
+DSW_ALSA_CMD="amixer"
+if [ "$DSW_ALSA_DEV" ];  then DSW_ALSA_CMD="$DSW_ALSA_CMD -D $DSW_ALSA_DEV";  fi
+if [ "$DSW_ALSA_CARD" ]; then DSW_ALSA_CMD="$DSW_ALSA_CMD -c $DSW_ALSA_CARD"; fi
+
