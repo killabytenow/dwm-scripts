@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Application
+Name=Dwm Wrapp
+Comment=Dynamic manager
+Exec=/usr/bin/dwm-wrapper
+
+[Window Manager]
+SessionManaged=true

@@ -1,0 +1,7 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Dwm Wrapp
+Comment=Dynamic window manager
+Exec=/usr/bin/dwm-wrapper
+Icon=dwm-scripts.png
+Type=XSession
