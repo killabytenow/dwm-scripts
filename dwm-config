@@ -1,0 +1,66 @@
+###############################################################################
+# dwm-config
+#
+# dwm desktop configuration file.
+#
+# This file can be installed in the following places:
+#     /etc/dwm-scripts,
+#     /opt/etc/dwm-scripts
+#     ~/.dwm-config
+#     ~/etc/dwm-scripts/dwm-config
+#
+# -----------------------------------------------------------------------------
+# DWM Scripts - wrapper for dwm/dmenu/slock
+#   (C) 2007-2013 Gerardo García Peña
+#   Programmed by Gerardo García Peña
+#
+#   This program is free software; you can redistribute it and/or modify it
+#   under the terms of the GNU General Public License as published by the Free
+#   Software Foundation; either version 2 of the License, or (at your option)
+#   any later version.
+#
+#   This program is distributed in the hope that it will be useful, but WITHOUT
+#   ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+#   FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+#   more details.
+#
+#   You should have received a copy of the GNU General Public License along
+#   with this program; if not, write to the Free Software Foundation, Inc., 51
+#   Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+#
+###############################################################################
+
+# top message update frequency (in seconds)
+DSW_BAR_UPDATE=10
+
+# Screensaver
+#   Uncomment your favorite or let dwm-scripts to choose the best.
+# DSW_LOCK="gnome-screensaver"
+# DSW_LOCK="slock"
+# DSW_LOCK="dpms"
+# DSW_LOCK="none"
+
+# Settings manager
+#   Uncomment your favorite or let dwm-scripts to choose the best.
+DSW_SETTINGS="gnome"
+# DSW_SETTINGS="none"
+
+# alsa config
+#DSW_ALSA_DEV=""
+#DSW_ALSA_CHN="Master Mono Headphone"
+DSW_ALSA_CARD="0"
+DSW_ALSA_CHN="Master"
+
+# screenshots!
+#   directory where screenshots will be left.
+SHOTSDIR="/tmp"
+
+# xterm
+#   user's preferred 'xterm'
+#DSW_XTERM=xterm
+
+# add ~/bin entries to dmenu
+#  if enabled, all the binaries in your local ~/bin folder will be added to the
+#  dmenu list.
+DMN_HOME_BIN=1
+
