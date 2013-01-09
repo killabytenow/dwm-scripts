@@ -1,0 +1,73 @@
+#!/bin/sh
+###############################################################################
+# dwm-shutdown
+#
+# This script is used to reboot or turn off the computer. It uses dmenu as
+# interface.
+#
+# -----------------------------------------------------------------------------
+# DWM Scripts - wrapper for dwm/dmenu/slock
+#   (C) 2007-2013 Gerardo García Peña
+#   Programmed by Gerardo García Peña
+#
+#   This program is free software; you can redistribute it and/or modify it
+#   under the terms of the GNU General Public License as published by the Free
+#   Software Foundation; either version 2 of the License, or (at your option)
+#   any later version.
+#
+#   This program is distributed in the hope that it will be useful, but WITHOUT
+#   ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+#   FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+#   more details.
+#
+#   You should have received a copy of the GNU General Public License along
+#   with this program; if not, write to the Free Software Foundation, Inc., 51
+#   Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+#
+###############################################################################
+
+. dwm-config-read
+
+# Check and process input parameter
+if [ -z "$1" ]; then
+  error "You must specify an action (poweroff, reboot)."
+  exit 1
+fi
+
+case "$1" in
+poweroff)
+  ACTION="shutdown computer"
+  COMMAND="poweroff"
+  ;;
+reboot)
+  ACTION="reboot computer"
+  COMMAND="reboot"
+  ;;
+*)
+  msg "error: Unknown action '$1'."
+  exit 1
+esac
+
+C2="`which "$COMMAND"`"
+if [ -z "$C2" ]; then
+  msg "Command '$COMMAND' not found in this system."
+  exit 1
+fi
+COMMAND="$C2"
+
+# Build menu options and launch menu
+MENU="Are you sure you want to $ACTION?
+yes
+no"
+
+R=`echo "$MENU" | dmenu | tr '[:lower:]' '[:upper:]'`
+
+# If answer is not YES then cancel action
+if [ "$R" != "YES" ]; then
+  msg "-------------- ACTION CANCELLED --------------"
+  exit 0
+fi
+
+# Finish executing action
+exec `dwm-sudo "$COMMAND"`
+exit $?

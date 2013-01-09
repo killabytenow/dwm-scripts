@@ -1,0 +1,75 @@
+#!/bin/sh
+###############################################################################
+# dwm-wrapper
+#
+# This script is a wrapper for dwm that integrates all other scripts.
+#
+# -----------------------------------------------------------------------------
+# DWM Scripts - wrapper for dwm/dmenu/slock
+#   (C) 2007-2013 Gerardo García Peña
+#   Programmed by Gerardo García Peña
+#
+#   This program is free software; you can redistribute it and/or modify it
+#   under the terms of the GNU General Public License as published by the Free
+#   Software Foundation; either version 2 of the License, or (at your option)
+#   any later version.
+#
+#   This program is distributed in the hope that it will be useful, but WITHOUT
+#   ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+#   FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+#   more details.
+#
+#   You should have received a copy of the GNU General Public License along
+#   with this program; if not, write to the Free Software Foundation, Inc., 51
+#   Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+#
+###############################################################################
+
+. dwm-config-read
+
+PATH="$PATH:/usr/local/bin"
+
+# JAVA Bug
+export AWT_TOOLKIT="MToolkit"
+
+# load keys
+if [ -e "~/.Xmodmap" ]; then
+  xmodmap ~/.Xmodmap
+fi
+
+# this process updates date-time
+log "Launch dwm-msg-writer..."
+dwm-msg-writer &
+
+# initialize screen saver
+log "Initialize dwm-screen-lock..."
+dwm-screen-lock --init
+
+# set settings manager
+(
+  log "Set background: waiting for dwm to start..."
+  DBIN=`which dwm`
+
+  while pgrep "$DBIN" > /dev/null 2>&1; do
+    sleep 1
+  done
+
+  log "Starting settings manager..."
+  case "$DSW_SETTINGS" in
+  gnome)
+    log "  - Using gnome settings."
+    gnome-settings-daemon &
+    gnome-power-manager &
+    ;;
+  none)
+    log "  - No settings manager configured."
+  esac
+
+  log "Set background: setting background..."
+  dwm-set-background
+) &
+
+# launch dwm
+log "Launching dwm..."
+while true; do dwm; done
+

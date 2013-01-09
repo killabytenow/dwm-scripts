@@ -1,0 +1,94 @@
+#!/bin/sh
+###############################################################################
+# dwm-set-background
+#
+# This script sets dwm background.
+#
+# -----------------------------------------------------------------------------
+# DWM Scripts - wrapper for dwm/dmenu/slock
+#   (C) 2007-2013 Gerardo García Peña
+#   Programmed by Gerardo García Peña
+#
+#   This program is free software; you can redistribute it and/or modify it
+#   under the terms of the GNU General Public License as published by the Free
+#   Software Foundation; either version 2 of the License, or (at your option)
+#   any later version.
+#
+#   This program is distributed in the hope that it will be useful, but WITHOUT
+#   ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+#   FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+#   more details.
+#
+#   You should have received a copy of the GNU General Public License along
+#   with this program; if not, write to the Free Software Foundation, Inc., 51
+#   Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+#
+###############################################################################
+
+. dwm-config-read
+BDEF="/usr/share/dwm/default-dwm-background"
+for i in jpg png; do
+  if [ -e "$BDEF.$i" ]; then
+    DEFAULT="$BDEF.$i"
+    break;
+  fi
+done
+
+if [ "$1" = "-h" -o "$1" = "--help" ]; then
+  log "Usage:"
+  log "  $0 [new-background [disposition]]"
+  log "If none parameter is specified, reloads the current background."
+  log "If a file is specified, it will be used as new background."
+  log "If you specify a file, you can also specify a disposition: center,"
+  log "scale, tile o seamless. If not specified, default is scale."
+fi
+
+if [ -n "$1" -a ! -r "$1" ]; then
+  error "File '$1' does not exist."
+  exit 1
+fi
+
+if [ -n "$1" ]; then
+  log "Installing '$1'..."
+  if [ "$2" ]; then
+      DISP="$2"
+      case "$DISP" in
+      center)   ;;
+      scale)    ;;
+      tile)     ;;
+      seamless) ;;
+      *) error "Bad disposition '$2'. Using 'scale'." 1>&2
+         DISP="scale"
+      esac
+  else
+      DISP="scale"
+  fi
+  rm -f -- "$HOME/.dwm-background"*
+  cp "$1" "$HOME/.dwm-background-$DISP"
+fi
+
+if which feh > /dev/null 2>&1; then
+  BG=`ls "$HOME/.dwm-background"* 2> /dev/null | head -n1`
+  DISP=`echo "$BG" | sed 's#^.*\.dwm-background\([^ .]*\).*$#\1#'`
+
+  case "$DISP" in
+  -center)   ;;
+  -scale)    ;;
+  -tile)     ;;
+  -seamless) ;;
+  *) DISP="-scale"
+  esac
+
+  if [ -z "$BG" -a -e "$DEFAULT" ]; then
+    error "No user background found. Using default '$DEFAULT'."
+    BG="$DEFAULT"
+  fi
+  if [ "$BG" ]; then
+    log "Using background '$BG' (with disposition --bg$DISP)."
+    feh --bg$DISP "$BG"
+  fi
+else
+  error "feh is not installed. Try with apt-get install feh."
+fi
+
+exit 0
