@@ -111,6 +111,7 @@ Compiling and installing the DWM Scripts
      make && sudo make install
 
 
+
 Configuring DWM Scripts
 =======================
 
@@ -135,7 +136,9 @@ The 'dwm-config' file
 Your list of applications in dmenu
 ----------------------------------
 
-  The 'dmenu' program is also wrapped by the 'dmenu-wrapper' script.
+  The 'dmenu' program is also wrapped by the 'dmenu-wrapper' script. It shows a
+  list of predefined programs and allows to launch arbitrary programs (if the
+  user input is not found in the list of alternatives, it tries to execute it).
 
   The list of options presented by 'dmenu' are configured in the 'dmenu' config
   file. This file will be searched in the following places (in this order):
