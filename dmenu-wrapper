@@ -1,0 +1,146 @@
+#!/bin/sh
+###############################################################################
+# dmenu-wrapper
+#
+# Wrapper for DMENU
+#
+# -----------------------------------------------------------------------------
+# DWM Scripts - wrapper for dwm/dmenu/slock
+#   (C) 2007-2013 Gerardo García Peña
+#   Programmed by Gerardo García Peña
+#
+#   This program is free software; you can redistribute it and/or modify it
+#   under the terms of the GNU General Public License as published by the Free
+#   Software Foundation; either version 2 of the License, or (at your option)
+#   any later version.
+#
+#   This program is distributed in the hope that it will be useful, but WITHOUT
+#   ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+#   FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+#   more details.
+#
+#   You should have received a copy of the GNU General Public License along
+#   with this program; if not, write to the Free Software Foundation, Inc., 51
+#   Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+#
+###############################################################################
+
+. dwm-config-read
+
+IFS="
+"
+PATH="$PATH:/sbin:/usr/sbin:/usr/local/bin:/usr/local/sbin:$HOME/bin"
+DMENUCFG=`search_config_file "dmenu-config"`
+
+if [ "$DMENUCFG" ]; then
+  CMLIST=`cat "$DMENUCFG"`
+else
+  CMLIST="
+  # Select your favourite programs. If a program needs administration
+  # privileges (su or sudo), add an exclamation mark before.
+          aterm
+          chromium-browser
+          firefox
+          gnome-terminal
+          nautilus --no-desktop
+         !poweroff
+         !reboot
+          dwm-screenshot
+          dwm-windowshot
+          dwm-xterm
+         !wireshark
+          xcalc
+          xclock
+          xterm"
+fi
+
+launch_dmenu()
+{
+  local i C
+
+  for i in $CMLIST; do
+    C="`echo "$i" | sed 's# .*$##' | sed 's#^!##'`"
+    which "$C" > /dev/null 2>&1 && basename "$C"
+  done | dmenu
+}
+
+is_cmlist_entry()
+{
+  for i in $CMLIST; do
+    echo "$i"
+  done | sed 's#^!##' | grep "^$1"
+}
+
+choose_command()
+{
+  local i C T
+
+  C="`launch_dmenu`"
+  if [ "$C" ] && T=`is_cmlist_entry "$C"`; then
+    C="$T"
+  fi
+
+  echo "$C"
+}
+
+need_su()
+{
+  local i C
+
+  C="$1"
+
+  if [ "$C" ] && echo "$CMLIST" | grep "^!.*$C" > /dev/null 2>&1; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+shutdown_action()
+{
+  if [ "$1" = "poweroff" -o "$1" = "reboot" ]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+CMLIST=`echo "$CMLIST" | grep -v '^ *\(#.*\)\?$' | sed 's#\(^ \+\| \+$\)##'`
+
+if [ "$DMN_HOME_BIN" ]; then
+  for BIN in `find ~/bin -type f -executable`; do
+     BIN="`basename "$BIN"`"
+     if ! is_cmlist_entry "$BIN"; then
+       echo "Add [$BIN]"
+       CMLIST="$CMLIST$IFS$BIN"
+     fi
+  done
+fi
+
+CH=`choose_command`
+if [ -z "$CH" ]; then
+  # if execution is at this point, it means that user pressed ESC
+  exit 1
+fi
+
+if echo $CH | grep -v ' ' > /dev/null 2>&1; then
+  CM=`which "$CH"`
+else
+  CM="$CH"
+fi
+if need_su "$CH"; then
+  CM=`dwm-sudo $CM`
+fi
+
+if shutdown_action "$CH"; then
+  dwm-shutdown "$CH"
+else
+  if [ -z "$CM" ]; then
+    msg "I don't know nothing about '$CH'. Leave Britney alone."
+  else
+    msg "Launching: $CM"
+    sh -c "$CM" &
+  fi
+fi
+
+exit 0

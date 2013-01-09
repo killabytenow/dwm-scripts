@@ -1,0 +1,36 @@
+# Select your favourite programs. If a program needs administration
+# privileges (su or sudo), add an exclamation mark before.
+        aterm
+        chromium-browser
+        firefox
+        gedit
+        gimp
+        gnome-calculator
+        google-chrome
+        icedove
+        nautilus --no-desktop
+       !poweroff
+       !reboot
+
+        localc
+        loimpress
+        lowriter
+        oocalc
+        ooimpress
+        oowriter
+
+        mozilla-thunderbird
+        dwm-screenshot
+        dwm-windowshot
+        thunderbird
+        transmission
+        virtualbox
+       !vmware
+        vmware-server-console
+        xchat-gnome
+        webscarab
+       !wireshark
+        xcalc
+        xchat-gnome
+        xclock
+        xterm

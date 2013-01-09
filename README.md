@@ -240,6 +240,7 @@ Setup keys
     keycode 176 = XF86AudioRaiseVolume
 
   You can discover keycodes with 'xev', a program that prints X window events.
+  We attach a demo .Xmodmap file with this program.
 
   Currently following keys are recognized:
 
