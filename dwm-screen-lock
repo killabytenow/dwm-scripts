@@ -1,0 +1,95 @@
+#!/bin/sh
+###############################################################################
+# dwm-screen-lock
+#
+# This script is called when the user wants to lock the screen (it is a wrapper
+# for slock).
+#
+# -----------------------------------------------------------------------------
+# DWM Scripts - wrapper for dwm/dmenu/slock
+#   (C) 2007-2013 Gerardo García Peña
+#   Programmed by Gerardo García Peña
+#
+#   This program is free software; you can redistribute it and/or modify it
+#   under the terms of the GNU General Public License as published by the Free
+#   Software Foundation; either version 2 of the License, or (at your option)
+#   any later version.
+#
+#   This program is distributed in the hope that it will be useful, but WITHOUT
+#   ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+#   FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+#   more details.
+#
+#   You should have received a copy of the GNU General Public License along
+#   with this program; if not, write to the Free Software Foundation, Inc., 51
+#   Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+#
+###############################################################################
+
+. dwm-config-read
+
+# TODO: Lock check
+if [ -z "$DSW_LOCK" ]; then
+  log "Choosing the best screen locker..."
+  if which gnome-screensaver > /dev/null 2>&1; then
+    DSW_LOCK="gnome-screensaver"
+  else
+    if which slock > /dev/null 2>&1; then
+      DSW_LOCK="slock"
+    else
+      if which dpms > /dev/null 2>&1; then
+        DSW_LOCK="dpms"
+      else
+        error 'No screen locker available.'
+        DSW_LOCK="none"
+      fi
+    fi
+  fi
+  log "Choosed screensaver '$DSW_LOCK' automatically."
+else
+  DSW_LOCK=`basename "$DSW_LOCK"`
+fi
+
+log "Configuring '$DSW_LOCK'..."
+case "$DSW_LOCK" in
+gnome*)
+  DSW_LC="`which gnome-screensaver-command` --lock"
+  DSW_LI="`which gnome-screensaver`"
+  ;;
+slock)
+  DSW_LC="`which slock`"
+  DSW_LI=""
+  ;;
+dpms)
+  DSW_LC=""
+  DSW_LI="`which xset` dpms 300 300 300"
+  ;;
+none)
+  exit 0
+  ;;
+*)
+  error "Unknown screen locker '$DSW_LOCK'."
+  exit 1
+esac
+
+if [ "$1" ]; then
+  case "$1" in
+  --init)
+    log "Launching (in parallel) '$DSW_LOCK'..."
+    (
+      $DSW_LI \
+        || ( error "Cannot initialize screen locker."; exit 1 )
+    ) &
+    ;;
+  *)
+    error "Bad option '$1'."
+    exit 1
+  esac
+else
+  msg '==================== GOING TO LOCK THIS SCREEN ===================='
+  sleep 1
+  $DSW_LC \
+    || msg '!!! CANNOT LOCK SCREEN - '$DSW_LOCK' FAILED !!!'
+fi
+
+exit 0
