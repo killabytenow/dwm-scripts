@@ -29,8 +29,15 @@ Copyright
 Installation Instructions
 =========================
 
-Required libraries
-------------------
+Required libraries and programs
+-------------------------------
+
+  You will need at least dwm, dmenu and wmname (if you want to avoid some nasty
+  Java GUI bugs (TM)):
+
+    http://dwm.suckless.org/
+    http://tools.suckless.org/dmenu
+    http://tools.suckless.org/wmname
 
   This program does not require any library a part from the ones used yet by
   DWM for being compiled. So you will need at least the same libraries than the

@@ -6,7 +6,9 @@
         gedit
         gimp
         gnome-calculator
+        gnome-paint
         google-chrome
+        google-earth
         icedove
         nautilus --no-desktop
        !poweroff
@@ -19,18 +21,18 @@
         ooimpress
         oowriter
 
-        mozilla-thunderbird
         dwm-screenshot
         dwm-windowshot
+        mozilla-thunderbird
         thunderbird
         transmission
         virtualbox
-       !vmware
         vmware-server-console
-        xchat-gnome
         webscarab
-       !wireshark
         xcalc
+        xchat-gnome
         xchat-gnome
         xclock
         xterm
+       !vmware
+       !wireshark

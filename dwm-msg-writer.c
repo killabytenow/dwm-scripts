@@ -496,13 +496,17 @@ int main(int argc, char **argv)
     localtime_r(&t, &ts);
 
     /* format msg */
-    sprintf(s, "%02d:%02d %02d/%02d/%d [",
+    sprintf(s, "%02d:%02d %02d/%02d/%d ",
             ts.tm_hour, ts.tm_min,
             ts.tm_mday, ts.tm_mon + 1, ts.tm_year + 1900);
 
     /* add ac/battery status report */
-    strcat(s, batstat);
-    strcat(s, "] ");
+    if(strlen(batstat) > 0)
+    {
+      strcat(s, "[");
+      strcat(s, batstat);
+      strcat(s, "] ");
+    }
 
     /* get key status */
     if(xkb_ext)
@@ -527,7 +531,7 @@ int main(int argc, char **argv)
     }
 
     /* wait a little before repeat */
-    sleep(2);
+    sleep(1);
   }
 }
 
