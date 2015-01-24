@@ -44,7 +44,7 @@ if [ "`stat -L -c "%u,%A" "$1" | cut -b 1-2,6`" = "0,s" ]; then
   echo "$@"
 else
   if which gksu > /dev/null 2>&1; then
-    echo "gksu $@"
+    echo "gksu -- $@"
   else
     if which x-terminal-emulator > /dev/null 2>&1; then
       echo "x-terminal-emulator -e su $@"
