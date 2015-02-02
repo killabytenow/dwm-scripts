@@ -1,6 +1,19 @@
 # Select your favourite programs. If a program needs administration
 # privileges (su or sudo), add an exclamation mark before.
+
+        # dwm scripts and other helpful programs
+        dwm-screenshot
+        dwm-windowshot
+       !poweroff
+       !reboot
+
+        # basic apps
         aterm
+        xclock
+        xterm
+
+        # web browsers, email and other nice apps
+        amule
         chromium-browser
         firefox
         gedit
@@ -10,10 +23,15 @@
         google-chrome
         google-earth
         icedove
+        mozilla-thunderbird
         nautilus --no-desktop
-       !poweroff
-       !reboot
+        thunderbird
+        transmission
+        transmission-gtk
+        xcalc
+        xchat-gnome
 
+        # productivity
         localc
         loimpress
         lowriter
@@ -21,19 +39,11 @@
         ooimpress
         oowriter
 
-        dwm-screenshot
-        dwm-windowshot
-        mozilla-thunderbird
-        thunderbird
-        transmission
-        transmission-gtk
+        # hacking & developing
         virtualbox
-        vmware-server-console
-        webscarab
-        xcalc
-        xchat-gnome
-        xchat-gnome
-        xclock
-        xterm
        !vmware
+        vmware-server-console
+        vmware-view
+        webscarab
        !wireshark
+
