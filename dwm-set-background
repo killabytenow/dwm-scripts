@@ -39,8 +39,13 @@ if [ "$1" = "-h" -o "$1" = "--help" ]; then
   log "  $0 [new-background [disposition]]"
   log "If none parameter is specified, reloads the current background."
   log "If a file is specified, it will be used as new background."
-  log "If you specify a file, you can also specify a disposition: center,"
-  log "scale, tile o seamless. If not specified, default is scale."
+  log "If you specify a file, you can also specify a disposition:"
+  log "  - center"
+  log "  - fill"
+  log "  - max"
+  log "  - scale"
+  log "  - tile"
+  log "If not specified, default disposition 'scale' is used."
 fi
 
 if [ -n "$1" -a ! -r "$1" ]; then
@@ -54,9 +59,10 @@ if [ -n "$1" ]; then
       DISP="$2"
       case "$DISP" in
       center)   ;;
+      fill)     ;;
+      max)      ;;
       scale)    ;;
       tile)     ;;
-      seamless) ;;
       *) error "Bad disposition '$2'. Using 'scale'." 1>&2
          DISP="scale"
       esac
@@ -71,13 +77,9 @@ if which feh > /dev/null 2>&1; then
   BG=`ls "$HOME/.dwm-background"* 2> /dev/null | head -n1`
   DISP=`echo "$BG" | sed 's#^.*\.dwm-background\([^ .]*\).*$#\1#'`
 
-  case "$DISP" in
-  -center)   ;;
-  -scale)    ;;
-  -tile)     ;;
-  -seamless) ;;
-  *) DISP="-scale"
-  esac
+  if [ -z "$DISP" ]; then
+  	DISP="-scale"
+  fi
 
   if [ -z "$BG" -a -e "$DEFAULT" ]; then
     error "No user background found. Using default '$DEFAULT'."
