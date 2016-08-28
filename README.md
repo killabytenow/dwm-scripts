@@ -257,9 +257,9 @@ Setup keys
 
   If you don't have multimedia keys you can configure other keybindings like:
 
-    { 0,                  XK_F12,  spawn, "exec dwm-volume-mute" }, \
-    { MODKEY|ControlMask, XK_Down, spawn, "exec dwm-volume-down" }, \
-    { MODKEY|ControlMask, XK_Up,   spawn, "exec dwm-volume-up"   }, \
+    { 0,                  XK_F12,  spawn, {.v = volmutecmd } },
+    { MODKEY|ControlMask, XK_Down, spawn, {.v = voldowncmd } },
+    { MODKEY|ControlMask, XK_Up,   spawn, {.v = volupcmd   } },
 
 
 Setup Xsessions
