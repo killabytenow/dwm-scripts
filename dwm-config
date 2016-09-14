@@ -53,6 +53,8 @@ DSW_ALSA_CHN="Master"
 
 # screenshots!
 #   directory where screenshots will be left.
+SHOTS_BACKEND=gnome-screenshot
+#SHOTS_BACKEND=xwd
 SHOTSDIR="/tmp"
 
 # xterm

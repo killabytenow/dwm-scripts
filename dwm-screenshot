@@ -29,7 +29,19 @@
 
 mkdir -p "$SHOTSDIR"
 FILE="$SHOTSDIR/screenshot-`date +%Y%m%d-%H.%M.%S.png`"
-xwd -root | xwdtopnm | pnmtopng > "$FILE"
-msg "screenshot left in file '$FILE'"
+case "$SHOTS_BACKEND" in
+gnome-screenshot)
+	gnome-screenshot -f "$FILE"
+	;;
+xwd)
+	xwd -root | xwdtopnm | pnmtopng > "$FILE"
+	;;
+*)
+	msg "ERROR: Unknown capturing mechanism '$SHOTS_BACKEND'."
+esac
+
+if [ -e "$FILE" ]; then
+	msg "screenshot left in file '$FILE'"
+fi
 
 exit 0
