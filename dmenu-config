@@ -45,5 +45,6 @@
         vmware-server-console
         vmware-view
         webscarab
-       !wireshark
+        wireshark
+      #!wireshark
 
