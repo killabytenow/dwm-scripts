@@ -31,6 +31,7 @@ IFS="
 "
 PATH="$PATH:/sbin:/usr/sbin:/usr/local/bin:/usr/local/sbin:$HOME/bin"
 DMENUCFG=`search_config_file "dmenu-config"`
+SELECTED_MONITOR="0"
 
 if [ "$DMENUCFG" ]; then
   CMLIST=`cat "$DMENUCFG"`
@@ -105,42 +106,61 @@ shutdown_action()
   fi
 }
 
+while test "$1"; do
+	PARAMETER="$1"
+	shift
+	case "$1" in
+	-m)
+		SELECTED_MONITOR="$1"
+		shift
+		if [ -z "$SELECTED_MONITOR" ] \
+		|| echo "$SELECTED_MONITOR" | grep -v '^\(0\|[1-9][0-9]*\)' > /dev/null 2>&1; then
+			error "Invalid selected monitor '$SELECTED_MONITOR'."
+			exit 1
+		fi
+		;;
+	*)
+		error "Unknown parameter '$PARAMETER'."
+		exit 1
+	esac
+done
+
 CMLIST=`echo "$CMLIST" | grep -v '^ *\(#.*\)\?$' | sed 's#\(^ \+\| \+$\)##'`
 
-if [ "$DMN_HOME_BIN" ]; then
-  for BIN in `find ~/bin -type f -executable`; do
-     BIN="`basename "$BIN"`"
-     if ! is_cmlist_entry "$BIN"; then
-       echo "Add [$BIN]"
-       CMLIST="$CMLIST$IFS$BIN"
-     fi
-  done
+if [ "$DMN_HOME_BIN" -a -d ~/bin ]; then
+	for BIN in `find ~/bin -type f -executable`; do
+		BIN="`basename "$BIN"`"
+		if ! is_cmlist_entry "$BIN"; then
+			echo "Add [$BIN]"
+			CMLIST="$CMLIST$IFS$BIN"
+		fi
+	done
 fi
 
 CH=`choose_command`
 if [ -z "$CH" ]; then
-  # if execution is at this point, it means that user pressed ESC
-  exit 1
+	# if execution is at this point, it means that user pressed ESC
+	exit 1
 fi
 
 if echo $CH | grep -v ' ' > /dev/null 2>&1; then
-  CM=`which "$CH"`
+	CM=`which "$CH"`
 else
-  CM="$CH"
+	CM="$CH"
 fi
 if need_su "$CH"; then
-  CM=`dwm-sudo $CM`
+	CM=`dwm-sudo $CM`
 fi
 
 if shutdown_action "$CH"; then
-  dwm-shutdown "$CH"
+	dwm-shutdown "$CH"
 else
-  if [ -z "$CM" ]; then
-    msg "I don't know nothing about '$CH'. Leave Britney alone."
-  else
-    msg "Launching: $CM"
-    sh -c "$CM" &
-  fi
+	if [ -z "$CM" ]; then
+		msg "I don't know nothing about '$CH'. Leave Britney alone."
+	else
+		msg "Launching: $CM"
+		sh -c "$CM" &
+	fi
 fi
 
 exit 0
